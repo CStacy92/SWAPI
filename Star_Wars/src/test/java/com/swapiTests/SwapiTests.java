@@ -10,6 +10,7 @@ import org.junit.Test;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
 public class SwapiTests {
@@ -20,24 +21,38 @@ public class SwapiTests {
 		RequestSpecification httpRequest = RestAssured.given();
 		Response resp = httpRequest.get("/people");
 
-		//JsonPath people = resp.jsonPath();
-
-		//verify status code
+		// verify status code
 		Assert.assertTrue(resp.statusCode() == 200);
-		
-		//count height greater than 200 in response
-		//fix (NOT CHECKING ALL 82 people)
-		List heights = resp.body().jsonPath().getList("results.height");
-		int count = 0;
-		
-		for (Object h : heights) {
-			int x = Integer.valueOf(h.toString());
-			if (x > 200) {
-				count++;
+
+		// count height greater than 200 in response
+		//KEEP TRACK OF NAMES WITH GREATER THAN 200 HEIGHT
+		ArrayList<String> amounts = new ArrayList<String>();
+		for (int i = 1; i < 10; i++) {
+			String page = "/people/?page=" + i;
+			ArrayList<String> h = httpRequest.get(page).then().extract().path("results.height");
+			for (String j : h) {
+				amounts.add(j);
 			}
 		}
-		Assert.assertEquals(1, count);
+
+		int count = 0;
+		for (String h : amounts) {
+			if (h.equals("unknown")) {
+				continue;
+			} else {
+				int x = Integer.valueOf(h);
+				if (x > 200) {
+					count++;
+				}
+			}
+		}
+		Assert.assertEquals(10, count);
 		
+		//verify number of people checked
+		Assert.assertEquals(82, amounts.size());
+
+		// verify names taller than 200
+
 	}
 
 }
