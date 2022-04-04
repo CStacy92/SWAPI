@@ -4,4 +4,20 @@
   <artifactId>Star_Wars</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>StarWars</name>
+<dependencies>
+<!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
+<dependency>
+    <groupId>io.rest-assured</groupId>
+    <artifactId>rest-assured</artifactId>
+    <version>4.5.1</version>
+</dependency>
+
+<dependency>  
+        <groupId>org.json</groupId>  
+        <artifactId>json</artifactId>  
+        <version>20180813</version>  
+</dependency> 
+
+</dependencies>
+
 </project>
