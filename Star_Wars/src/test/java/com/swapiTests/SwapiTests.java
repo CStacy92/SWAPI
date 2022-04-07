@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
@@ -32,7 +33,7 @@ public class SwapiTests {
 
 		// count height greater than 200cm in response
 		// verify names of characters over 200cm in height
-		ArrayList<String> amounts = new ArrayList<String>();
+		ArrayList<String> heights = new ArrayList<String>();
 		ArrayList<String> names = new ArrayList<String>();
 		ArrayList<String> temp = new ArrayList<String>();
 		ArrayList<String> over200 = new ArrayList<String>(Arrays.asList("Darth Vader", "Chewbacca", "Jar Jar Binks",
@@ -41,7 +42,7 @@ public class SwapiTests {
 			String page = "/people/?page=" + i;
 			temp = httpRequest.get(page).then().extract().path("results.height");
 			for (String j : temp) {
-				amounts.add(j);
+				heights.add(j);
 			}
 			temp.clear();
 			temp = httpRequest.get(page).then().extract().path("results.name");
@@ -53,7 +54,7 @@ public class SwapiTests {
 
 		int i = 0;
 		int count = 0;
-		for (String h : amounts) {
+		for (String h : heights) {
 			if (h.equals("unknown")) {
 				continue;
 			} else {
@@ -69,8 +70,13 @@ public class SwapiTests {
 		Assert.assertEquals(10, count);
 
 		// verify number of people checked
-		Assert.assertEquals(82, amounts.size());
+		Assert.assertEquals(82, heights.size());
 
+		temp.clear();
+		 String temp2 = httpRequest.get("/people/").then().extract().path("results");
+		JsonPath js = new JsonPath(temp2);
+		System.out.println(js.get("name"));
+		
 	}
 
 }
